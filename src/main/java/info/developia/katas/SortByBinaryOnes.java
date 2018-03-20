@@ -1,9 +1,9 @@
 package info.developia.katas;
 
-import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
 In this example you need to implement a function that sort a list of integers based on it's binary representation.
