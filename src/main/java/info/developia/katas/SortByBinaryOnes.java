@@ -1,9 +1,7 @@
 package info.developia.katas;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /*
 In this example you need to implement a function that sort a list of integers based on it's binary representation.
@@ -32,17 +30,48 @@ public class SortByBinaryOnes {
     public static Integer[] sort(Integer list[]) {
         List<Integer> result = new ArrayList<>();
 
-        // Hashmap<Integer,... does make the order by number
-        Map<Integer, Integer> numbBin = new HashMap<>();
+        // Hashmap<Integer,... make the order by binary representation length
+        Map<Integer, Integer> numbBinRepLen = new HashMap<>();
 
-        for (Integer number : list){
+        for (Integer number : list) {
             String binRep = Integer.toBinaryString(number);
-            int binRepNoZeroLen = binRep.replaceAll("0","").length();
+            int binRepNoZeroLen = binRep.replaceAll("0", "").length();
 
-            numbBin.put(number, binRepNoZeroLen);
+            numbBinRepLen.put(number, binRepNoZeroLen);
         }
 
-        return (list);
+        numbBinRepLen = numbBinRepLen.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (integer, integer2) -> integer, LinkedHashMap::new ));
+
+        Iterator it = numbBinRepLen.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry e1 = (Map.Entry) it.next();
+
+            int e1Key = (int) e1.getKey();
+            int e1Value = (int) e1.getValue();
+
+            if (!it.hasNext()) {
+                result.add(e1Value);
+                break;
+            }
+
+            Map.Entry e2 = (Map.Entry) it.next();
+            int e2Key = (int) e2.getKey();
+            int e2Value = (int) e2.getValue();
+
+            if ((e1Value == e2Value) && (e1Key > e2Key)) {
+                result.add(e2Key);
+                result.add(e1Key);
+            } else {
+                result.add(e1Key);
+                result.add(e2Key);
+            }
+        }
+
+        return result.toArray(new Integer[result.size()]);
     }
 
 }
