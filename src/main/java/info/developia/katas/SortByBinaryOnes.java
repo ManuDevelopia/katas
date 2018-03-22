@@ -28,9 +28,6 @@ In this example you need to implement a function that sort a list of integers ba
 public class SortByBinaryOnes {
 
     public static Integer[] sort(Integer list[]) {
-        List<Integer> result = new ArrayList<>();
-
-        // Hashmap<Integer,... make the order by binary representation length
         Map<Integer, Integer> numbBinRepLen = new HashMap<>();
 
         for (Integer number : list) {
@@ -42,39 +39,20 @@ public class SortByBinaryOnes {
 
         numbBinRepLen = numbBinRepLen.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .sorted(SortByBinaryOnes::compare)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (integer, integer2) -> integer, LinkedHashMap::new ));
+                        (integer, integer2) -> integer, LinkedHashMap::new));
 
-        Iterator it = numbBinRepLen.entrySet().iterator();
+        return numbBinRepLen.keySet().toArray(new Integer[numbBinRepLen.keySet().size()]);
+    }
 
-        while (it.hasNext()) {
-            Map.Entry e1 = (Map.Entry) it.next();
-
-            int e1Key = (int) e1.getKey();
-            int e1Value = (int) e1.getValue();
-
-            if (!it.hasNext()) {
-                result.add(e1Value);
-                break;
-            }
-
-            Map.Entry e2 = (Map.Entry) it.next();
-            int e2Key = (int) e2.getKey();
-            int e2Value = (int) e2.getValue();
-
-            if ((e1Value == e2Value) && (e1Key > e2Key)) {
-                result.add(e2Key);
-                result.add(e1Key);
-            } else {
-                result.add(e1Key);
-                result.add(e2Key);
-            }
+    private static int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+        if (o1.getValue() == o2.getValue()) {
+            return o1.getKey() < o2.getKey() ? o1.getKey() : o2.getKey();
+        } else {
+            return o1.getValue() < o2.getValue() ? o1.getValue() : o2.getValue();
         }
-
-        return result.toArray(new Integer[result.size()]);
     }
 
 }
-
-
 
